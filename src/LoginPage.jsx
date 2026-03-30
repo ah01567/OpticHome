@@ -8,6 +8,15 @@ function LoginPage({ onLoginSuccess, onGoToLicense }) {
   const [pinDigits, setPinDigits] = useState(Array(PIN_LENGTH).fill(''));
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [isDbModalOpen, setIsDbModalOpen] = useState(false);
+  const [dbConfig, setDbConfig] = useState({
+    host: 'localhost',
+    port: '3306',
+    username: 'root',
+    password: '',
+    databaseName: '',
+    createPin: '',
+  });
   const inputRefs = useRef([]);
 
   const pinValue = useMemo(() => pinDigits.join(''), [pinDigits]);
@@ -134,16 +143,52 @@ function LoginPage({ onLoginSuccess, onGoToLicense }) {
     attemptUnlock(pinValue);
   };
 
+  const openDbModal = () => {
+    setIsDbModalOpen(true);
+  };
+
+  const closeDbModal = () => {
+    setIsDbModalOpen(false);
+  };
+
+  const handleDbChange = (field, value) => {
+    if (field === 'createPin') {
+      const sanitized = value.replace(/\D/g, '').slice(0, 4);
+      setDbConfig((prev) => ({ ...prev, createPin: sanitized }));
+      return;
+    }
+    setDbConfig((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveDbConfig = () => {
+    console.log('Database config saved:', dbConfig);
+    closeDbModal();
+  };
+
   return (
     <main className="login-page">
       <section className="login-card" aria-labelledby="login-title">
-        <button
-          type="button"
-          className="license-button"
-          onClick={onGoToLicense}
-        >
-          License
-        </button>
+        <div className="login-top-actions">
+          <button
+            type="button"
+            className="settings-button"
+            onClick={openDbModal}
+            aria-label="Database Settings"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 9.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6z" />
+              <path d="M19.1 14.2a7.3 7.3 0 0 0 .1-2.2l2-1.5-2-3.4-2.5.7a7.4 7.4 0 0 0-1.9-1.1L14.3 4h-4.6l-.5 2.7a7.4 7.4 0 0 0-1.9 1.1l-2.5-.7-2 3.4 2 1.5a7.3 7.3 0 0 0 .1 2.2l-2 1.5 2 3.4 2.5-.7a7.4 7.4 0 0 0 1.9 1.1l.5 2.7h4.6l.5-2.7a7.4 7.4 0 0 0 1.9-1.1l2.5.7 2-3.4-2-1.5z" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            className="license-button"
+            onClick={onGoToLicense}
+          >
+            License
+          </button>
+        </div>
 
         <header className="login-header">
           <h1 id="login-title" className="brand-title">OpticHome</h1>
@@ -201,6 +246,114 @@ function LoginPage({ onLoginSuccess, onGoToLicense }) {
 
         <p className="helper-text">Secure local access for staff only</p>
       </section>
+
+      {isDbModalOpen && (
+        <div className="db-modal-overlay" role="presentation" onClick={closeDbModal}>
+          <section
+            className="db-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Database Configuration"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <header className="db-modal-header">
+              <h2 className="db-modal-title">
+                <svg className="db-title-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <ellipse cx="12" cy="6.2" rx="6.4" ry="2.7" />
+                  <path d="M5.6 6.2v6.6c0 1.5 2.9 2.7 6.4 2.7s6.4-1.2 6.4-2.7V6.2" />
+                </svg>
+                <span>Database Configuration</span>
+              </h2>
+              <button
+                type="button"
+                className="db-close-btn"
+                onClick={closeDbModal}
+                aria-label="Close"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
+            </header>
+
+            <div className="db-modal-body">
+              <div className="db-grid-top">
+                <label className="db-field">
+                  <span>HOST SERVER</span>
+                  <input
+                    type="text"
+                    value={dbConfig.host}
+                    onChange={(event) => handleDbChange('host', event.target.value)}
+                  />
+                </label>
+
+                <label className="db-field">
+                  <span>PORT</span>
+                  <input
+                    type="text"
+                    value={dbConfig.port}
+                    onChange={(event) => handleDbChange('port', event.target.value)}
+                  />
+                </label>
+              </div>
+
+              <label className="db-field">
+                <span>USERNAME</span>
+                <input
+                  type="text"
+                  value={dbConfig.username}
+                  onChange={(event) => handleDbChange('username', event.target.value)}
+                />
+              </label>
+
+              <label className="db-field">
+                <span>PASSWORD</span>
+                <input
+                  type="password"
+                  placeholder="Leave empty if none"
+                  value={dbConfig.password}
+                  onChange={(event) => handleDbChange('password', event.target.value)}
+                />
+              </label>
+
+              <label className="db-field">
+                <span>DATABASE NAME</span>
+                <input
+                  type="text"
+                  value={dbConfig.databaseName}
+                  onChange={(event) =>
+                    handleDbChange('databaseName', event.target.value)
+                  }
+                />
+              </label>
+
+              <label className="db-field">
+                <span>CREATE PIN (4 DIGITS)</span>
+                <input
+                  type="password"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={4}
+                  placeholder="1234"
+                  value={dbConfig.createPin}
+                  onChange={(event) =>
+                    handleDbChange('createPin', event.target.value)
+                  }
+                />
+              </label>
+            </div>
+
+            <footer className="db-modal-actions">
+              <button type="button" className="db-cancel-btn" onClick={closeDbModal}>
+                Cancel
+              </button>
+              <button type="button" className="db-save-btn" onClick={handleSaveDbConfig}>
+                Save &amp; Apply
+              </button>
+            </footer>
+          </section>
+        </div>
+      )}
     </main>
   );
 }

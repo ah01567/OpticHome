@@ -59,9 +59,6 @@ body {
 }
 
 .license-button {
-  position: absolute;
-  top: 22px;
-  right: 24px;
   border: 1px solid var(--login-border);
   background: #ffffff;
   color: #2d2a27;
@@ -78,6 +75,45 @@ body {
 .license-button:hover {
   border-color: #c8c2bc;
   background: #fbfbfa;
+}
+
+.login-top-actions {
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-button {
+  border: 1px solid var(--login-border);
+  background: #ffffff;
+  color: #2d2a27;
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.settings-button:hover {
+  border-color: #c8c2bc;
+  background: #fbfbfa;
+}
+
+.settings-button svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .login-header {
@@ -192,13 +228,162 @@ body {
   color: #807971;
 }
 
+.db-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(21, 18, 14, 0.22);
+  display: grid;
+  place-items: center;
+  padding: 14px;
+  z-index: 80;
+}
+
+.db-modal {
+  width: min(600px, 100%);
+  background: #ffffff;
+  border: 1px solid #ddd8d2;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.db-modal-header {
+  min-height: 64px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ebe6e0;
+}
+
+.db-modal-title {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+  font-size: clamp(20px, 2.2vw, 24px);
+  line-height: 1;
+  color: #1f1d1b;
+  font-family: 'Inter', 'Manrope', 'SF Pro Text', 'Segoe UI', sans-serif;
+  font-weight: 600;
+}
+
+.db-title-icon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: #c48a2a;
+  stroke-width: 1.8;
+}
+
+.db-close-btn {
+  border: none;
+  background: transparent;
+  color: #a9a29b;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.db-close-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.db-modal-body {
+  padding: 16px 20px 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.db-grid-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 140px);
+  gap: 10px;
+}
+
+.db-field {
+  display: grid;
+  gap: 8px;
+  text-align: left;
+}
+
+.db-field span {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #706960;
+  text-align: left;
+}
+
+.db-field input {
+  width: 100%;
+  min-height: 44px;
+  border: 1.5px solid #ddd8d2;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 0 12px;
+  font-size: 15px;
+  color: #35312d;
+}
+
+.db-field input:focus {
+  outline: none;
+  border-color: #b8b2ab;
+}
+
+.db-field input::placeholder {
+  color: #a49d95;
+}
+
+.db-modal-actions {
+  border-top: 1px solid #ebe6e0;
+  padding: 14px 20px 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.db-cancel-btn {
+  min-height: 40px;
+  border: 1.5px solid #c8a66a;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #9d7030;
+  padding: 0 18px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.db-save-btn {
+  min-height: 40px;
+  border: none;
+  border-radius: 12px;
+  background: #cb8728;
+  color: #fffaf3;
+  padding: 0 20px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 @media (max-width: 640px) {
   .login-card {
     border-radius: 28px;
     gap: 20px;
   }
 
-  .license-button {
+  .login-top-actions {
     top: 16px;
     right: 16px;
   }
@@ -209,5 +394,13 @@ body {
 
   .unlock-button {
     min-height: 54px;
+  }
+
+  .db-modal {
+    width: min(560px, 100%);
+  }
+
+  .db-grid-top {
+    grid-template-columns: 1fr;
   }
 }
