@@ -21,6 +21,7 @@ const initialSales = [
     createdAt: '2026-03-25',
     updatedAt: '2026-03-28',
     state: 'Pending',
+    notes: '',
   },
   {
     id: 'S-1002',
@@ -32,6 +33,7 @@ const initialSales = [
     createdAt: '2026-03-22',
     updatedAt: '2026-03-30',
     state: 'Delivered',
+    notes: '',
   },
   {
     id: 'S-1003',
@@ -43,6 +45,7 @@ const initialSales = [
     createdAt: '2026-03-26',
     updatedAt: '2026-03-27',
     state: 'Ready',
+    notes: '',
   },
   {
     id: 'S-1004',
@@ -54,6 +57,7 @@ const initialSales = [
     createdAt: '2026-03-29',
     updatedAt: '2026-03-29',
     state: 'Cancelled',
+    notes: '',
   },
 ];
 
@@ -141,6 +145,8 @@ function HomePage({ onLogout }) {
   const [isGlassesDropdownOpen, setIsGlassesDropdownOpen] = useState(false);
   const [saleForm, setSaleForm] = useState({
     glassesModel: '',
+    glassPrice: '',
+    notes: '',
     clientPaidAmount: '',
     deliveryDate: '',
   });
@@ -159,6 +165,7 @@ function HomePage({ onLogout }) {
     glassesID: '',
     clientID: '',
     originalPrice: '',
+    notes: '',
     paidAmount: '',
     deliveryDate: '',
     createdAt: '',
@@ -187,6 +194,8 @@ function HomePage({ onLogout }) {
     setIsGlassesDropdownOpen(false);
     setSaleForm({
       glassesModel: '',
+      glassPrice: '',
+      notes: '',
       clientPaidAmount: '',
       deliveryDate: '',
     });
@@ -207,6 +216,13 @@ function HomePage({ onLogout }) {
     setGlassesSearch('');
     setIsGlassesDropdownOpen(false);
     setIsInlineClientModalOpen(false);
+    setSaleForm({
+      glassesModel: '',
+      glassPrice: '',
+      notes: '',
+      clientPaidAmount: '',
+      deliveryDate: '',
+    });
     setInlineClientFormData({
       name: '',
       dob: '',
@@ -267,6 +283,8 @@ function HomePage({ onLogout }) {
         : { clientID: null, fullName: 'Guest client' },
       sale: {
         glassesModel: saleForm.glassesModel.trim(),
+        glassPrice: saleForm.glassPrice,
+        notes: saleForm.notes.trim(),
         clientPaidAmount: saleForm.clientPaidAmount,
         deliveryDate: saleForm.deliveryDate,
       },
@@ -286,6 +304,7 @@ function HomePage({ onLogout }) {
       glassesID: resolvedModelId || '',
       clientID: sale.clientID || '',
       originalPrice: sale.originalPrice || '',
+      notes: sale.notes || '',
       paidAmount: sale.paidAmount || '',
       deliveryDate: sale.deliveryDate || '',
       createdAt: sale.createdAt || '',
@@ -305,6 +324,7 @@ function HomePage({ onLogout }) {
       glassesID: '',
       clientID: '',
       originalPrice: '',
+      notes: '',
       paidAmount: '',
       deliveryDate: '',
       createdAt: '',
@@ -326,6 +346,7 @@ function HomePage({ onLogout }) {
               glassesID: saleDetailsForm.glassesID.trim(),
               clientID: saleDetailsForm.clientID,
               originalPrice: saleDetailsForm.originalPrice.trim(),
+              notes: saleDetailsForm.notes.trim(),
               paidAmount: saleDetailsForm.paidAmount.trim(),
               deliveryDate: saleDetailsForm.deliveryDate,
               state: saleDetailsForm.state,
@@ -615,18 +636,16 @@ function HomePage({ onLogout }) {
 
             {saleModalStep === 2 && (
               <div className="modal-step">
-                <div className="client-summary">
-                  <p className="summary-label">Selected Client</p>
-                  <p className="summary-value">
-                    {selectedClient
-                      ? `${selectedClient.fullName} (${selectedClient.clientID})`
-                      : 'Guest client'}
+                <div className="selected-client-text">
+                  <p className="selected-client-value">
+                    Selected Client :{' '}
+                    {selectedClient ? selectedClient.fullName : 'Guest client'}
                   </p>
                 </div>
 
                 <div className="form-grid">
                   <label className="field">
-                    <span>Glasses Model</span>
+                    <span>Frames Type</span>
                     <div className="glasses-dropdown">
                       <button
                         type="button"
@@ -638,7 +657,7 @@ function HomePage({ onLogout }) {
                         <span>
                           {selectedGlassesModel
                             ? `${selectedGlassesModel.name} (£${selectedGlassesModel.price})`
-                            : 'Select glasses model'}
+                            : 'Select frames type'}
                         </span>
                         <span className="dropdown-caret">▾</span>
                       </button>
@@ -669,6 +688,7 @@ function HomePage({ onLogout }) {
                                     setSaleForm((prev) => ({
                                       ...prev,
                                       glassesModel: model.name,
+                                      glassPrice: String(model.price),
                                     }));
                                     setGlassesSearch('');
                                     setIsGlassesDropdownOpen(false);
@@ -686,6 +706,37 @@ function HomePage({ onLogout }) {
                         </div>
                       )}
                     </div>
+                  </label>
+
+                  <label className="field">
+                    <span>Glass Price</span>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0.00"
+                      value={saleForm.glassPrice}
+                      onChange={(event) =>
+                        setSaleForm((prev) => ({
+                          ...prev,
+                          glassPrice: event.target.value,
+                        }))
+                      }
+                    />
+                  </label>
+
+                  <label className="field">
+                    <span>Notes</span>
+                    <input
+                      type="text"
+                      placeholder="Add note"
+                      value={saleForm.notes}
+                      onChange={(event) =>
+                        setSaleForm((prev) => ({
+                          ...prev,
+                          notes: event.target.value,
+                        }))
+                      }
+                    />
                   </label>
 
                   <label className="field">
@@ -889,7 +940,22 @@ function HomePage({ onLogout }) {
               </label>
 
               <label className="field">
-                <span>Glasses Model</span>
+                <span>State</span>
+                <select
+                  value={saleDetailsForm.state}
+                  onChange={(event) =>
+                    handleSaleDetailsChange('state', event.target.value)
+                  }
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="Ready">Ready</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </label>
+
+              <label className="field">
+                <span>Frames Type</span>
                 <div className="glasses-dropdown">
                   <button
                     type="button"
@@ -947,27 +1013,23 @@ function HomePage({ onLogout }) {
               </label>
 
               <label className="field">
-                <span>State</span>
-                <select
-                  value={saleDetailsForm.state}
-                  onChange={(event) =>
-                    handleSaleDetailsChange('state', event.target.value)
-                  }
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="Ready">Ready</option>
-                  <option value="Delivered">Delivered</option>
-                  <option value="Cancelled">Cancelled</option>
-                </select>
-              </label>
-
-              <label className="field">
-                <span>Original Price</span>
+                <span>Glass Price</span>
                 <input
                   type="text"
                   value={saleDetailsForm.originalPrice}
                   onChange={(event) =>
                     handleSaleDetailsChange('originalPrice', event.target.value)
+                  }
+                />
+              </label>
+
+              <label className="field">
+                <span>Notes</span>
+                <input
+                  type="text"
+                  value={saleDetailsForm.notes}
+                  onChange={(event) =>
+                    handleSaleDetailsChange('notes', event.target.value)
                   }
                 />
               </label>
