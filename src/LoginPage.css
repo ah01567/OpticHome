@@ -355,10 +355,10 @@ body {
 
 .db-cancel-btn {
   min-height: 40px;
-  border: 1.5px solid #c8a66a;
+  border: 1.5px solid #979797;
   border-radius: 12px;
   background: #ffffff;
-  color: #9d7030;
+  color: #5d5d5d;
   padding: 0 18px;
   font-size: 15px;
   font-weight: 600;
@@ -369,7 +369,7 @@ body {
   min-height: 40px;
   border: none;
   border-radius: 12px;
-  background: #cb8728;
+  background: #131210;
   color: #fffaf3;
   padding: 0 20px;
   font-size: 15px;
